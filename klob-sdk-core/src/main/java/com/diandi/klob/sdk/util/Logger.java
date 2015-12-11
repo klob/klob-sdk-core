@@ -59,7 +59,7 @@ public final class Logger {
      * TAG is used for the Log, the name is a little different
      * in order to differentiate the logs easily with the filter
      */
-    private static String TAG = "PRETTYLOGGER";
+    private static String TAG = "kloblog-";
 
     //no instance
     private Logger() {
@@ -86,7 +86,7 @@ public final class Logger {
         if (tag.trim().length() == 0) {
             throw new IllegalStateException("tag may not be empty");
         }
-        Logger.TAG = tag;
+        Logger.TAG = tag+" ";
         return settings;
     }
 

@@ -173,7 +173,7 @@ public class PhotoOperate {
     }
 
     public File scale(Uri fileUri) throws Exception {
-        L.e(TAG + 0, fileUri);
+      //  L.v(TAG + 0, fileUri);
      /*   String path = null;
    *//*     try {
             path = FileUtils.getPath(mContext, fileUri);
@@ -188,7 +188,7 @@ public class PhotoOperate {
         String path = FileUtils.getPath(mContext, fileUri);
         File outputFile = new File(path);
         String name = outputFile.getName();
-        L.d(TAG, path);
+        L.v(TAG, path);
 
         if (FormatUtil.isGif(path)) {
             return outputFile;

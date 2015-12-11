@@ -1,15 +1,23 @@
 package com.diandi.klob.sdk.util;
 
 
+import android.text.TextUtils;
 import android.util.Log;
 
 
 import com.diandi.klob.sdk.common.Global;
+import com.diandi.klob.sdk.core.BuildConfig;
 import com.diandi.klob.sdk.processor.Processor;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * *******************************************************************************
@@ -21,9 +29,12 @@ import java.util.List;
  * *******************************************************************************
  */
 public class L {
-
     private static final String TAG = "tag";
-    private static boolean isDebug;// 是否需要打印bug，可以在application的onCreate函数里面初始化
+    private static boolean isDebug = BuildConfig.DEBUG;// 是否需要打印bug，可以在application的onCreate函数里面初始化
+
+    static {
+        Logger.init(" kloblog").hideThreadInfo();
+    }
 
     public static boolean isLoggable() {
         return isDebug;
@@ -39,13 +50,11 @@ public class L {
             Log.v(TAG, msg + "     " + Thread.currentThread().getStackTrace()[3].getMethodName());
     }
 
-
     public static void d(String msg) {
         if (isDebug) {
             Logger.d(TAG, msg + "   \n" + Thread.currentThread().getStackTrace()[3].getMethodName());
         }
     }
-
 
     public static void i(String msg) {
         if (isDebug)
@@ -90,6 +99,46 @@ public class L {
         }
     }
 
+    public static void dReflect(String tag, Object obj) {
+        if (obj == null) {
+            Logger.d(TAG, "the obj   is null");
+        } else if (isDebug) {
+            String info = "";
+            Field[] fields = obj.getClass().getDeclaredFields();
+            //  String[] types1 = {"int", "java.lang.String", "boolean", "char", "float", "double", "long", "short", "byte"};
+            // String[] types2 = {"Integer", "java.lang.String", "java.lang.Boolean", "java.lang.Character", "java.lang.Float", "java.lang.Double", "java.lang.Long", "java.lang.Short", "java.lang.Byte"};
+            for (Field field : fields) {
+                field.setAccessible(true);
+                try {
+                    info = info + field.getName() + "  " + field.get(obj) + "\n";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            Logger.d(tag, info);
+        }
+    }
+
+    public static void dInvoke(String tag, Object obj, String methodName) {
+        if (obj == null || TextUtils.isEmpty(methodName)) {
+            return;
+        }
+        try {
+            Class clazz = obj.getClass();
+            Method m1 = clazz.getDeclaredMethod(methodName);
+            m1.setAccessible(true);
+            Object msg = m1.invoke(obj);
+            L.d(tag, msg);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void d(String tag, String msg) {
         if (isDebug)
             Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg);
@@ -107,17 +156,22 @@ public class L {
 
     public static void d(String tag, String... msgs) {
         if (isDebug) {
-            String value = null;
+            String value = "";
             for (String msg : msgs) {
                 value += msg + "   ";
             }
-            Logger.d(tag,  "    " + value);
+            Logger.d(tag, "    " + value);
         }
     }
 
     public static void d(String tag, Object object) {
-        if (isDebug)
-            Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + object.getClass().getSimpleName() + "   " + object + "   ");
+        if (isDebug) {
+            if (object != null)
+                Logger.d(tag, "    " + object.getClass().getSimpleName() + "   " + object + "   ");
+            else {
+                Logger.d(tag, "   null " + "   " + "   ");
+            }
+        }
     }
 
     public static void d(String tag, double num) {

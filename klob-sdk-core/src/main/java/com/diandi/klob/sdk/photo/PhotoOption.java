@@ -12,7 +12,7 @@ package com.diandi.klob.sdk.photo;
 public class PhotoOption {
     public static int max_photo_size=250 * 1024;
     public static int max_photo_quality=70;
-    public static boolean isWaterMark=WaterMarkUtil.isWaterMark;
+    public static boolean isWaterMark=true;
     public static boolean isCompress=true;
     public static float scale=0;
 }

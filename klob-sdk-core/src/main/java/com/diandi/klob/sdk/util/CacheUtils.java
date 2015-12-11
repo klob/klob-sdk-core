@@ -19,6 +19,7 @@ import static android.os.Environment.MEDIA_MOUNTED;
  * *********    Copyright © 2015, klob, All Rights Reserved
  * *******************************************************************************
  */
+@Deprecated
 public class CacheUtils {
     private static final String TAG = "CacheUtils";
     private static final String EXTERNAL_STORAGE_PERMISSION = "android.permission.WRITE_EXTERNAL_STORAGE";

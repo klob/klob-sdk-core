@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.diandi.klob.sdk.cache.ACache;
 import com.diandi.klob.sdk.photo.ImageLoadTool;
+import com.diandi.klob.sdk.photo.PhotoOption;
 import com.diandi.klob.sdk.util.L;
 
 /**
@@ -27,6 +28,7 @@ public class XApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        PhotoOption.isWaterMark=false;
         sInstance = this;
         L.setLoggable(com.diandi.klob.sdk.core.BuildConfig.DEBUG);
         ImageLoadTool.initImageLoader(this);

@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-
+ version ="1.0.2"
+int version_code=2
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -9,8 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0.0"
+        versionCode version_code
+        versionName version
 
     }
     buildTypes {
@@ -21,40 +22,35 @@ android {
         debug {
         }
     }
+    lintOptions {
+        abortOnError false
+    }
     enforceUniquePackageName = false
 
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
+//latest.integration
 /*    compile 'com.android.support:appcompat-v7:22.0.0'*/
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-
-
-
-   // compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    compile 'com.loopj.android:android-async-http:1.4.8'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-   // compile 'com.squareup.okhttp:okhttp:2.5.0'
-   // compile 'com.facebook.fresco:fresco:0.5.0+'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'de.hdodenhof:circleimageview:1.2.0'
-
+    compile 'com.alibaba:fastjson:1.2.4'
 
 }
-def siteUrl = 'https://github.com/klob/Simplemoji'      // 项目的主页
-def gitUrl = 'https://github.com/klob/Simplemoji.git'
+def siteUrl = 'https://github.com/klob/klob-sdk-core'      // 项目的主页
+def gitUrl = 'https://github.com/klob/klob-sdk-core.git'
 group = "com.diandi.klob"
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
         pom {
             project {
-                packaging 'aar'
+                packaging 'jar'
                 // Add your description here
                 name 'klob-sdk-core'  //项目描述
                 url siteUrl
@@ -81,20 +77,26 @@ install {
         }
     }
 }
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
 task javadoc(type: Javadoc) {
+
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
 }
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
 artifacts {
-    archives javadocJar
+   // archives javadocJar
     archives sourcesJar
 }
 Properties properties = new Properties()

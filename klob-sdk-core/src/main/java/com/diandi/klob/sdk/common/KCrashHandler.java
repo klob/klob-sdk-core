@@ -31,8 +31,8 @@ import java.util.Map;
 public class KCrashHandler implements Thread.UncaughtExceptionHandler {
 
     public static final String TAG = "CrashHandler";
+    static final Object o = new Object();
     //CrashHandler实例
-    private static KCrashHandler INSTANCE = new KCrashHandler();
     //程序的Context对象
     protected Context mContext;
     PhoneInfo mPhoneInfo;
@@ -47,12 +47,6 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
     protected KCrashHandler() {
     }
 
-    /**
-     * 获取CrashHandler实例 ,单例模式
-     */
-    public static KCrashHandler getInstance() {
-        return INSTANCE;
-    }
 
     /**
      * 初始化

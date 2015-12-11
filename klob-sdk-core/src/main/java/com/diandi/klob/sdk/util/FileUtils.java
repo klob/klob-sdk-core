@@ -1,6 +1,7 @@
 package com.diandi.klob.sdk.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,8 +36,16 @@ public class FileUtils {
 
 
     public final static String DOWNLOAD_SETTING = "download_setting";
-    public final static String DOWNLOAD_PATH = "download_path";
-    public final static String DOWNLOAD_FOLDER = XApplication.getInstance().getPackageName();
+    public final static String PACKAGE_NAME = XApplication.getInstance().getPackageName();
+    public final static String DOWNLOAD_FOLDER = PACKAGE_NAME;
+    public final static String APP_PATH = File.separator+PACKAGE_NAME.substring(PACKAGE_NAME.lastIndexOf(".") + 1)+File.separator;
+    public final static String APP_STORAGE_FOLDER = Environment.getExternalStorageDirectory() + APP_PATH + "storage" + File.separator;
+    public final static String APP_CACHE_PATH = Environment.getExternalStorageDirectory() + APP_PATH + "cache" + File.separator;
+    public final static String PICTURE_PATH = Environment.getExternalStorageDirectory() + APP_PATH + "image" + File.separator;
+    public final static String IMAGE_CACHE_PATH = Environment.getExternalStorageDirectory() + APP_PATH + "image/cache" + File.separator;
+    public final static String VIDEO_PATH = Environment.getExternalStorageDirectory() + APP_PATH + "video" + File.separator;
+    public final static String DOWNLOAD_PATH = Environment.getExternalStorageDirectory() + APP_PATH + "download" + File.separator;
+    private static final String TAG = "FileUtils";
 
     public static String getString(InputStream inputStream) {
         InputStreamReader inputStreamReader = null;
@@ -68,8 +77,44 @@ public class FileUtils {
             }
         } else {
             if (!file.mkdirs()) {
-                L.e("createDir","Unable to create directory: \" +\n" +
+                L.e("createDir", "Unable to create directory: \" +\n" +
                         "                        file.getAbsolutePath()");
+        /*        throw new IllegalStateException("Unable to create directory: " +
+                        file.getAbsolutePath());*/
+            }
+        }
+        return new File(file.getAbsolutePath() + File.separator + fileName);
+    }
+
+    public static File getExternalStoragePath(String fileName) {
+        String defaultPath = FileUtils.APP_STORAGE_FOLDER;
+        File file = new File(defaultPath);
+        if (file.exists()) {
+            if (!file.isDirectory()) {
+                throw new IllegalStateException(file.getAbsolutePath() +
+                        " already exists and is not a directory");
+            }
+        } else {
+            if (!file.mkdirs()) {
+                L.e("createDir", "Unable to create directory: \" +\n" + file.getAbsolutePath());
+        /*        throw new IllegalStateException("Unable to create directory: " +
+                        file.getAbsolutePath());*/
+            }
+        }
+        return new File(file.getAbsolutePath() + File.separator + fileName);
+    }
+
+    public static File getCacheStoragePath(String fileName) {
+        String defaultPath = FileUtils.APP_CACHE_PATH;
+        File file = new File(defaultPath);
+        if (file.exists()) {
+            if (!file.isDirectory()) {
+                throw new IllegalStateException(file.getAbsolutePath() +
+                        " already exists and is not a directory");
+            }
+        } else {
+            if (!file.mkdirs()) {
+                L.e("createDir", "Unable to create directory: \" +\n" + file.getAbsolutePath());
         /*        throw new IllegalStateException("Unable to create directory: " +
                         file.getAbsolutePath());*/
             }
@@ -236,6 +281,7 @@ public class FileUtils {
         return defaultPath;
     }
 
+
     public static boolean writeFile(File file, byte[] bytes) {
         if (!file.getParentFile().exists())
             file.getParentFile().mkdirs();
@@ -266,7 +312,7 @@ public class FileUtils {
         return true;
     }
 
-    public static void copyFile(File sourceFile, File targetFile) throws Exception {
+    public static File copyFile(File sourceFile, File targetFile) throws Exception {
         FileInputStream in = new FileInputStream(sourceFile);
         byte[] buffer = new byte[128 * 1024];
         int len = -1;
@@ -276,5 +322,8 @@ public class FileUtils {
         out.flush();
         out.close();
         in.close();
+        return targetFile;
     }
+
+
 }
