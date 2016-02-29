@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.util.Log;
 
-import com.diandi.klob.sdk.core.R;
 import com.diandi.klob.sdk.util.FormatUtil;
 import com.diandi.klob.sdk.util.FileUtils;
 import com.diandi.klob.sdk.util.L;
@@ -79,7 +78,7 @@ public class PhotoOperate {
     public File scale3(Uri fileUri) throws Exception {
         String path = FileUtils.getPath(mContext, fileUri);
         File outputFile = new File(path);
-        CameraPhotoUtil.getExifInfo(path);
+        BitmapUtil.getExifInfo(path);
         if (FormatUtil.isGif(path)) {
             return outputFile;
         }
@@ -98,7 +97,7 @@ public class PhotoOperate {
             options.inJustDecodeBounds = false;
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
             Matrix matrix = new Matrix();
-            matrix.setRotate(CameraPhotoUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
+            matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
             Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             outputFile = getTempFile2(mContext);
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -124,7 +123,7 @@ public class PhotoOperate {
     public File scale2(Uri fileUri) throws Exception {
         String path = FileUtils.getPath(mContext, fileUri);
         File outputFile = new File(path);
-        CameraPhotoUtil.getExifInfo(path);
+        BitmapUtil.getExifInfo(path);
         if (FormatUtil.isGif(path)) {
             return outputFile;
 
@@ -147,7 +146,7 @@ public class PhotoOperate {
 
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
             Matrix matrix = new Matrix();
-            matrix.setRotate(CameraPhotoUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
+            matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
             Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 
@@ -173,7 +172,7 @@ public class PhotoOperate {
     }
 
     public File scale(Uri fileUri) throws Exception {
-      //  L.v(TAG + 0, fileUri);
+        //  L.v(TAG + 0, fileUri);
      /*   String path = null;
    *//*     try {
             path = FileUtils.getPath(mContext, fileUri);
@@ -209,7 +208,7 @@ public class PhotoOperate {
 
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
             Matrix matrix = new Matrix();
-            matrix.setRotate(CameraPhotoUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
+            matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
             Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 
@@ -236,6 +235,34 @@ public class PhotoOperate {
 
     public File operate(Uri fileUri) throws Exception {
         File finalFile;
+/*
+        if (PhotoOption.isWaterMark) {
+            File compressFile = waterMark(fileUri);
+            if (PhotoOption.isCompress) {
+                finalFile = scale(Uri.fromFile(compressFile));
+            } else {
+                finalFile = compressFile;
+            }
+        } else {
+            if (PhotoOption.isCompress) {
+                finalFile = scale(fileUri);
+            } else {
+                String path = FileUtils.getPath(mContext, fileUri);
+                finalFile = new File(path);
+            }
+        }
+/*
+if(PhotoOption.isWaterMark){
+    finalFile = waterMark(fileUri);
+    if (PhotoOption.isCompress) {
+        File compressFile = scale(fileUri);
+    }
+}else {
+    String path = FileUtils.getPath(mContext, fileUri);
+    finalFile = new File(path);
+}
+*/
+
 
         if (PhotoOption.isCompress) {
             File compressFile = scale(fileUri);
@@ -252,6 +279,8 @@ public class PhotoOperate {
                 finalFile = new File(path);
             }
         }
+
+
         return finalFile;
     }
 
@@ -263,8 +292,14 @@ public class PhotoOperate {
     public File waterMark(Uri fileUri) throws Exception {
         L.d(TAG, fileUri);
         String path = FileUtils.getPath(mContext, fileUri);
+        L.d(TAG, path);
+        if (path.endsWith("/")) {
+            String cache = fileUri.toString().substring(fileUri.toString().lastIndexOf("/") + 1);
+            L.d(TAG, cache);
+            path = path + cache;
+        }
         File outputFile = new File(path);
-        if (FormatUtil.isGifByFile(outputFile)) {
+        if (FormatUtil.isGifByImageFile(outputFile)) {
             return outputFile;
         }
         String name = outputFile.getName();
@@ -281,7 +316,7 @@ public class PhotoOperate {
 
         Bitmap bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath(), options);
         Matrix matrix = new Matrix();
-        matrix.setRotate(CameraPhotoUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
+        matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
         Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         Bitmap waterMarkResult = WaterMarkUtil.watermarkBitmap(result, "");
         outputFile = getTempFile(mContext, name);

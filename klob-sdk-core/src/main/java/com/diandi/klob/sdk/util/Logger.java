@@ -86,7 +86,7 @@ public final class Logger {
         if (tag.trim().length() == 0) {
             throw new IllegalStateException("tag may not be empty");
         }
-        Logger.TAG = tag+" ";
+        Logger.TAG = tag+"";
         return settings;
     }
 

@@ -94,7 +94,7 @@ public class OkHttpDownloadRequest extends OkHttpGetRequest
             final long total = response.body().contentLength();
             long sum = 0;
 
-            L.e(total + "");
+            L.d(total + "");
 
             File dir = new File(destFileDir);
             if (!dir.exists())

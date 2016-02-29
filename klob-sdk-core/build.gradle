@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
- version ="1.0.2"
-int version_code=2
+version =KLOB_VERSION_NAME
+int version_code=KLOB_VERSION
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -30,21 +30,21 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//latest.integration
-/*    compile 'com.android.support:appcompat-v7:22.0.0'*/
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //latest.integration
+    /*    compile 'com.android.support:appcompat-v7:22.0.0'*/
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'de.hdodenhof:circleimageview:1.2.0'
     compile 'com.alibaba:fastjson:1.2.4'
 
+  //  compile project(':injecteventbus')
 }
 def siteUrl = 'https://github.com/klob/klob-sdk-core'      // 项目的主页
 def gitUrl = 'https://github.com/klob/klob-sdk-core.git'
-group = "com.diandi.klob"
+group = GROUP
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
@@ -77,28 +77,9 @@ install {
         }
     }
 }
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-task javadoc(type: Javadoc) {
+apply from: rootProject.file('release.gradle')
 
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-artifacts {
-   // archives javadocJar
-    archives sourcesJar
-}
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {

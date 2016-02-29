@@ -14,5 +14,5 @@ public class PhotoOption {
     public static int max_photo_quality=70;
     public static boolean isWaterMark=true;
     public static boolean isCompress=true;
-    public static float scale=0;
+    public static float scale=0.5f;
 }

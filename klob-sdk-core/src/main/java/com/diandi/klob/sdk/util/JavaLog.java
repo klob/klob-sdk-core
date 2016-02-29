@@ -1,5 +1,6 @@
 package com.diandi.klob.sdk.util;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,6 +71,46 @@ public class JavaLog {
         }
     }
 
+    public static void d(String tag, Object... objects) {
+        String value = "";
+        for (Object obj : objects) {
+            value += obj != null ? obj.toString() + " " : "";
+        }
+        Log(Thread.currentThread().getStackTrace()[3].getMethodName() + "           " + value);
+    }
+
+    public static Object getFieldValue(Object o, Class<?> clz, String fieldName) {
+        Object fieldValue = null;
+        JavaLog.d(o.getClass());
+        try {
+            Field field1 = clz.getDeclaredField(fieldName);
+            field1.setAccessible(true);
+            fieldValue = field1.get(o);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return fieldValue;
+    }
+
+    public static Object getFieldValue(Object o, String fieldName) {
+        Object fieldValue = null;
+        Class<?> clz = o.getClass();
+        d("reflect class name is " + o);
+        try {
+            Field field1 = clz.getDeclaredField(fieldName);
+            field1.setAccessible(true);
+            fieldValue = field1.get(o);
+            return fieldValue;
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        d("reflect field is null");
+        return fieldValue;
+    }
 
     public static void Log(String str) {
         System.out.println(CHAR_LEFT_MID + Long2Time(0) + CHAR_RIGHT_MID + "-Log: " + str);

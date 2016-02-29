@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.diandi.klob.sdk.XApplication;
+import com.diandi.klob.sdk.cache.ACache;
 import com.diandi.klob.sdk.concurrent.SimpleTask;
 import com.diandi.klob.sdk.processor.Processor;
 import com.diandi.klob.sdk.processor.WorkHandler;
@@ -24,7 +25,7 @@ import com.diandi.klob.sdk.processor.WorkHandler;
 
 public class Global {
 
-    public static Context globalContext = XApplication.getInstance();
+
 
     public static void copy(Context context, String content) {
         ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -45,14 +46,24 @@ public class Global {
         SimpleTask.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(globalContext, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(XApplication.getInstance(), msg, Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
-    public static void execute(WorkHandler handler)
-    {
+    public static void execute(WorkHandler handler) {
         Processor.execute(handler);
+    }
+
+
+
+    private static ACache mACache;
+
+    public static ACache getCache() {
+        if (mACache == null) {
+            mACache = ACache.get(XApplication.getInstance());
+        }
+        return mACache;
     }
 }

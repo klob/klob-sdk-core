@@ -33,7 +33,7 @@ public class L {
     private static boolean isDebug = BuildConfig.DEBUG;// 是否需要打印bug，可以在application的onCreate函数里面初始化
 
     static {
-        Logger.init(" kloblog").hideThreadInfo();
+        Logger.init("kloblog").hideThreadInfo();
     }
 
     public static boolean isLoggable() {
@@ -52,7 +52,7 @@ public class L {
 
     public static void d(String msg) {
         if (isDebug) {
-            Logger.d(TAG, msg + "   \n" + Thread.currentThread().getStackTrace()[3].getMethodName());
+            Logger.d(TAG, msg + "   \n" );
         }
     }
 
@@ -138,7 +138,53 @@ public class L {
         }
     }
 
-
+    public static Object dInvoke(Object obj, String methodName) {
+        if (obj == null || TextUtils.isEmpty(methodName)) {
+            return null;
+        }
+        Object result = 0;
+        try {
+            Class clazz = obj.getClass();
+            Method m1 = clazz.getDeclaredMethod(methodName);
+            m1.setAccessible(true);
+            Object resultCache = m1.invoke(obj);
+            if (resultCache instanceof Integer) {
+                result = resultCache;
+            }
+            L.d("dInvoke", result);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public static Object dInvokeString(Object obj, String methodName) {
+        if (obj == null || TextUtils.isEmpty(methodName)) {
+            return null;
+        }
+        Object result = "";
+        try {
+            Class clazz = obj.getClass();
+            L.d(TAG,clazz);
+            Method m1 = clazz.getDeclaredMethod(methodName);
+            m1.setAccessible(true);
+            Object resultCache = m1.invoke(obj);
+            if (resultCache instanceof String) {
+                result = resultCache;
+            }
+            L.d("dInvoke", result);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     public static void d(String tag, String msg) {
         if (isDebug)
             Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg);
@@ -189,13 +235,23 @@ public class L {
             Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg + "   " + e);
     }
 
-    public static void d(String tag, int msg, Object... objects) {
+   /* public static void d(String tag, int msg, Object... objects) {
         String value = "";
         if (isDebug) {
             for (Object obj : objects) {
                 value += obj != null ? obj.toString() + " " : "";
             }
             Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg + "           " + value);
+        }
+    }*/
+
+    public static void d(String tag, Object... objects) {
+        String value = "";
+        if (isDebug) {
+            for (Object obj : objects) {
+                value += obj != null ? obj.toString() + " " : "";
+            }
+            Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "           " + value);
         }
     }
 

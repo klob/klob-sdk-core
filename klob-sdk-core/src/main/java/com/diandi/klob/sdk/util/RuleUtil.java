@@ -29,7 +29,7 @@ public class RuleUtil {
     public static boolean isMobileNO(String mobiles) {
         if (TextUtils.isEmpty(mobiles)) return false;
         //Pattern pattern = Pattern.compile("1[0-9]{10}");
-        Pattern p = Pattern.compile("^((13[0-9])|(15[0-9])|(18[0,5-9])|(17[6-8]))\\d{8}$");
+        Pattern p = Pattern.compile("^((13[0-9])|(15[0-9])|(18[0-9])|(17[6-8]))\\d{8}$");
         Matcher m = p.matcher(mobiles);
         return m.matches();
     }

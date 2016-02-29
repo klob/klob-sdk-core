@@ -18,6 +18,7 @@ package com.diandi.klob.sdk.photo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.text.TextUtils;
 
 
@@ -48,17 +49,13 @@ public class BitmapDecoder {
      * Decode and sample down a bitmap from resources to the requested width and
      * height.
      *
-     * @param res
-     *            The resources object containing the image data
-     * @param resId
-     *            The resource id of the image data
-     * @param reqWidth
-     *            The requested width of the resulting bitmap
-     * @param reqHeight
-     *            The requested height of the resulting bitmap
+     * @param res       The resources object containing the image data
+     * @param resId     The resource id of the image data
+     * @param reqWidth  The requested width of the resulting bitmap
+     * @param reqHeight The requested height of the resulting bitmap
      * @return A bitmap sampled down from the original with the same aspect
-     *         ratio and dimensions that are equal to or greater than the
-     *         requested width and height
+     * ratio and dimensions that are equal to or greater than the
+     * requested width and height
      */
     public static Bitmap decodeSampledBitmapFromResource(Resources res,
                                                          int resId, int reqWidth, int reqHeight) {
@@ -117,20 +114,17 @@ public class BitmapDecoder {
      * Decode and sample down a bitmap from a file to the requested width and
      * height.
      *
-     * @param filename
-     *            The full path of the file to decode
-     * @param reqWidth
-     *            The requested width of the resulting bitmap
-     * @param reqHeight
-     *            The requested height of the resulting bitmap
+     * @param filename  The full path of the file to decode
+     * @param reqWidth  The requested width of the resulting bitmap
+     * @param reqHeight The requested height of the resulting bitmap
      * @return A bitmap sampled down from the original with the same aspect
-     *         ratio and dimensions that are equal to or greater than the
-     *         requested width and height
+     * ratio and dimensions that are equal to or greater than the
+     * requested width and height
      */
-    public static Bitmap decodeSampledBitmapFromFile(String filename,
-                                                     int reqWidth, int reqHeight) {
+
+    public static Bitmap decodeSampledBitmapFromFile(String filename,int reqWidth, int reqHeight) {
         if (TextUtils.isEmpty(filename)) {
-            L.e(TAG,"the file is not found");
+            L.e(TAG, "the file is not found");
             return null;
         }
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -146,6 +140,47 @@ public class BitmapDecoder {
         options.inJustDecodeBounds = false;
         options.inPreferredConfig = config;
         return BitmapFactory.decodeFile(filename, options);
+
+
+    }
+
+    public static Bitmap decodeSampledBitmapFromFileStrict(String filename,
+                                                           int reqWidth, int reqHeight) {
+        if (TextUtils.isEmpty(filename)) {
+            L.e(TAG, "the file is not found");
+            return null;
+        }
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filename, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        options.inPreferredConfig = config;
+        Bitmap result = BitmapFactory.decodeFile(filename, options);
+        int width = result.getWidth();
+        int height = result.getHeight();
+
+        if (width != reqWidth || height != reqHeight) {
+            float scaleX = (float) reqWidth / (float) width;
+            float scaleY = (float) reqHeight / (float) height;
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleX, scaleY);
+
+            Bitmap resizeResult = Bitmap.createBitmap(result, 0, 0, width, height, matrix, true);
+            result.recycle();
+
+            L.d(TAG, reqWidth, reqHeight, width, height, scaleX, scaleY, resizeResult.getWidth(), resizeResult.getHeight());
+            return resizeResult;
+
+        } else {
+            return result;
+        }
     }
 
     public static Bitmap decodeSampledBitmapFromDescriptor(FileDescriptor fileDescriptor) {
@@ -170,15 +205,12 @@ public class BitmapDecoder {
      * Decode and sample down a bitmap from a file input stream to the requested
      * width and height.
      *
-     * @param fileDescriptor
-     *            The file descriptor to read from
-     * @param reqWidth
-     *            The requested width of the resulting bitmap
-     * @param reqHeight
-     *            The requested height of the resulting bitmap
+     * @param fileDescriptor The file descriptor to read from
+     * @param reqWidth       The requested width of the resulting bitmap
+     * @param reqHeight      The requested height of the resulting bitmap
      * @return A bitmap sampled down from the original with the same aspect
-     *         ratio and dimensions that are equal to or greater than the
-     *         requested width and height
+     * ratio and dimensions that are equal to or greater than the
+     * requested width and height
      */
     public static Bitmap decodeSampledBitmapFromDescriptor(
             FileDescriptor fileDescriptor, int reqWidth, int reqHeight) {
@@ -209,13 +241,10 @@ public class BitmapDecoder {
      * which can be faster when decoding but results in a larger bitmap which
      * isn't as useful for caching purposes.
      *
-     * @param options
-     *            An options object with out* params already populated (run
-     *            through a decode* method with inJustDecodeBounds==true
-     * @param reqWidth
-     *            The requested width of the resulting bitmap
-     * @param reqHeight
-     *            The requested height of the resulting bitmap
+     * @param options   An options object with out* params already populated (run
+     *                  through a decode* method with inJustDecodeBounds==true
+     * @param reqWidth  The requested width of the resulting bitmap
+     * @param reqHeight The requested height of the resulting bitmap
      * @return The value to be used for inSampleSize
      */
     public static int calculateInSampleSize(BitmapFactory.Options options,

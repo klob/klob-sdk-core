@@ -180,20 +180,43 @@ public class FormatUtil {
     }
 
     public static boolean isPic(String extension) {
-        if (extension.equals("png") || extension.equals("jpg")) {
+        extension = extension.toLowerCase();
+        if (extension.equals("png") || extension.equals("jpg") || extension.equals("gif")) {
             return true;
         } else return false;
     }
 
     public static boolean isGif(String url) {
-        String type = getFileExtension(url);
-        if (type.equals("gif")||type.equals("GIF")||type.equals("Gif")) {
+        String type = getFileExtension(url).toLowerCase();
+        if (type.equals("gif") || type.equals("GIF") || type.equals("Gif")) {
             return true;
         } else return false;
     }
+
     // 通过文件头来判断是否gif
     public static boolean isGifByFile(File file) {
         try {
+            int length = 10;
+            InputStream is = new FileInputStream(file);
+            byte[] data = new byte[length];
+            is.read(data);
+            String type = getType(data);
+            is.close();
+
+            if (type.equals("gif") || type.equals("GIF") || type.equals("Gif")) {
+                return true;
+            }
+        } catch (IOException e) {
+            L.e("isGif", e);
+        }
+
+        return false;
+    }
+
+    // 通过文件头来判断是否gif
+    public static boolean isGifByImageFile(File file) {
+        return isGif(getFileExtension(file.getPath()).toLowerCase());
+       /* try {
             int length = 10;
             InputStream is = new FileInputStream(file);
             byte[] data = new byte[length];
@@ -208,7 +231,7 @@ public class FormatUtil {
             L.e("isGif",e);
         }
 
-        return false;
+        return false;*/
     }
 
     private static String getType(byte[] data) {
@@ -269,6 +292,7 @@ public class FormatUtil {
         //    L.e("type", type);
         return type;
     }
+
     public static String getMIMEType(File file) {
         String type = "*/*";
         String fName = file.getName();
@@ -306,7 +330,6 @@ public class FormatUtil {
         L.d("type", type + "   " + uri);
         return type;
     }
-
 
 
     public static String getSafeFilename(String name) {

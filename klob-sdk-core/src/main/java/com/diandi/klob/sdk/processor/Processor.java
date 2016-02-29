@@ -3,6 +3,8 @@ package com.diandi.klob.sdk.processor;
 import com.diandi.klob.sdk.concurrent.SimpleExecutor;
 import com.diandi.klob.sdk.concurrent.SimpleTask;
 
+import java.util.List;
+
 /**
  * *******************************************************************************
  * *********    Author : klob(kloblic@gmail.com) .

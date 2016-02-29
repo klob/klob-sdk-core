@@ -86,6 +86,24 @@ public class FileUtils {
         return new File(file.getAbsolutePath() + File.separator + fileName);
     }
 
+    public static File getExternalCachePath(String fileName) {
+        String defaultPath = FileUtils.APP_CACHE_PATH;
+        File file = new File(defaultPath);
+        if (file.exists()) {
+            if (!file.isDirectory()) {
+                throw new IllegalStateException(file.getAbsolutePath() +
+                        " already exists and is not a directory");
+            }
+        } else {
+            if (!file.mkdirs()) {
+                L.e("createDir", "Unable to create directory: \" +\n" + file.getAbsolutePath());
+        /*        throw new IllegalStateException("Unable to create directory: " +
+                        file.getAbsolutePath());*/
+            }
+        }
+        return new File(file.getAbsolutePath() + File.separator + fileName);
+    }
+
     public static File getExternalStoragePath(String fileName) {
         String defaultPath = FileUtils.APP_STORAGE_FOLDER;
         File file = new File(defaultPath);

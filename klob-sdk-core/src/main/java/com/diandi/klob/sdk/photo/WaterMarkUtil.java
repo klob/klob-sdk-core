@@ -29,7 +29,6 @@ import com.diandi.klob.sdk.util.L;
  */
 public class WaterMarkUtil {
     public static int res;
-    public static boolean isWaterMark = PhotoOption.isWaterMark;
     static String TAG = "WaterMarkUtil";
 
     //获取图片缩小的图片
@@ -38,10 +37,10 @@ public class WaterMarkUtil {
         //获取图片的高和宽
         BitmapFactory.Options options = new BitmapFactory.Options();
         //这一个设置使 BitmapFactory.decodeFile获得的图片是空的,但是会将图片信息写到options中
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(XApplication.getInstance().getResources(), id, options);
+        //   options.inJustDecodeBounds = true;
+        //  BitmapFactory.decodeResource(XApplication.getInstance().getResources(), id, options);
         // 计算比例 为了提高精度,本来是要640 这里缩为64
-      //  L.d(TAG, options.outHeight, options.outWidth);
+        //  L.d(TAG, options.outHeight, options.outWidth);
    /*     max = max / 10;
         int be = options.outWidth / max;
         if (be % 10 != 0)
@@ -63,40 +62,40 @@ public class WaterMarkUtil {
 
     // 加水印 也可以加文字
     public static Bitmap watermarkBitmap(Bitmap src, String title) {
-
         int srcWidth = src.getWidth();
         int srcHeight = src.getHeight();
         Bitmap watermark = scaleBitmap(res, src.getWidth());
-        L.d(TAG + "src", srcWidth, srcHeight);
+      //  L.d(TAG + "watermark", watermark.getWidth(), watermark.getHeight());
+     //   L.d(TAG + "src", srcWidth, srcHeight);
         //需要处理图片太大造成的内存超过的问题,这里我的图片很小所以不写相应代码了
         Bitmap newb = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);// 创建一个新的和SRC长度宽度一样的位图
         Canvas cv = new Canvas(newb);
         cv.drawBitmap(src, 0, 0, null);// 在 0，0坐标开始画入src
         Paint paint = new Paint();
         //加入图片
-        if (watermark != null && srcWidth > 300) {
+        if (srcWidth > 100) {
             int watermarkWidth = watermark.getWidth();
             int watermarkHeight = watermark.getHeight();
             //   paint.setAlpha(20);
             cv.drawBitmap(watermark, srcWidth - watermarkWidth - 5, srcHeight - watermarkHeight - 5, paint);// 在src的右下角画入水印
         } else {
-            title = "春花开男女社区，chunhuakai.com";
+            title = "春花开App";
         }
         //加入文字
         if (!TextUtils.isEmpty(title)) {
             String familyName = "宋体";
             Typeface font = Typeface.create(familyName, Typeface.BOLD);
             TextPaint textPaint = new TextPaint();
-            textPaint.setARGB(255,255,255,0);
+            textPaint.setARGB(255, 255, 255, 0);
             textPaint.setColor(Color.WHITE);
             textPaint.setTypeface(font);
             textPaint.setTextSize(11);
             //这里是自动换行的
-            StaticLayout layout = new StaticLayout(title,textPaint, srcWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
-            cv.translate(srcWidth-200,srcHeight-5);
+            StaticLayout layout = new StaticLayout(title, textPaint, srcWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
+            cv.translate(srcWidth - watermark.getWidth(), srcHeight - 5);
             layout.draw(cv);
             //文字就加左上角算了
-           // cv.drawText(title,srcWidth-200,srcHeight-15,paint);
+            // cv.drawText(title,srcWidth-200,srcHeight-15,paint);
         }
         cv.save(Canvas.ALL_SAVE_FLAG);// 保存
         cv.restore();// 存储

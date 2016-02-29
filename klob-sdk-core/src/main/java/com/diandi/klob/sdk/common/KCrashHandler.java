@@ -6,7 +6,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.diandi.klob.sdk.XApplication;
 import com.diandi.klob.sdk.util.L;
 
 import java.io.File;
@@ -31,15 +30,14 @@ import java.util.Map;
 public class KCrashHandler implements Thread.UncaughtExceptionHandler {
 
     public static final String TAG = "CrashHandler";
-    static final Object o = new Object();
     //CrashHandler实例
     //程序的Context对象
     protected Context mContext;
-    PhoneInfo mPhoneInfo;
+    protected PhoneInfo mPhoneInfo;
     //系统默认的UncaughtException处理类
-    private Thread.UncaughtExceptionHandler mDefaultHandler;
+    protected Thread.UncaughtExceptionHandler mDefaultHandler;
     //用于格式化日期,作为日志文件名的一部分
-    private DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    protected DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     /**
      * 保证只有一个CrashHandler实例
@@ -73,7 +71,7 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Log.e(TAG, "error : ", e);
             }
@@ -93,14 +91,13 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false;
         }
-
         L.e("UncaughtExceptionHandler", ex);
-
+        mPhoneInfo = new PhoneInfo(mContext);
+        saveCrashInfo2File(ex);
         //使用Toast来显示异常信息
         new Thread() {
             @Override
             public void run() {
-
                 Looper.prepare();
                 L.errorToast(ex.getMessage());
                 Toast.makeText(mContext, "很抱歉,程序出现异常错误,请重启应用或清除应用缓存", Toast.LENGTH_LONG).show();
@@ -108,10 +105,10 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
             }
         }.start();
         //收集设备参数信息
-        mPhoneInfo = new PhoneInfo(mContext);
+
         //  mPhoneInfo.print();
         //保存日志文件
-        saveCrashInfo2File(ex);
+
         return false;
     }
 
@@ -121,7 +118,7 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
      * @param ex
      * @return 返回文件名称, 便于将文件传送到服务器
      */
-    private String saveCrashInfo2File(Throwable ex) {
+    protected String saveCrashInfo2File(Throwable ex) {
 
         final String causes = ex.toString();
         String info = "";
@@ -161,7 +158,7 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
                 fos.write(sb.toString().getBytes());
                 fos.close();
                 final String finalInfo = info;
-                saveToServer(path + fileName, sb.toString(), finalInfo, causes, summary);
+                saveToLocal(path + fileName, sb.toString(), finalInfo, causes, summary);
             }
             return fileName;
         } catch (Exception e) {
@@ -170,7 +167,8 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
         return null;
     }
 
+    public void saveToLocal(String path, String all, String info, String cause, String summary) {
+    }
     public void saveToServer(String path, String all, String info, String cause, String summary) {
     }
-
 }

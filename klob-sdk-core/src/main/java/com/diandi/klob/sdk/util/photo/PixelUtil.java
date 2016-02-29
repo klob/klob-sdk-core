@@ -2,6 +2,7 @@ package com.diandi.klob.sdk.util.photo;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.TypedValue;
 
 import com.diandi.klob.sdk.XApplication;
 import com.diandi.klob.sdk.common.Global;
@@ -20,7 +21,7 @@ public class PixelUtil {
     /**
      * The glocontext.
      */
-    private static Context mContext = Global.globalContext;
+    private static Context mContext = XApplication.getInstance();
 
     /**
      * dp转 px.
@@ -29,8 +30,10 @@ public class PixelUtil {
      * @return the int
      */
     public static int dp2px(float value) {
-        final float scale = mContext.getResources().getDisplayMetrics().densityDpi;
-        return (int) (value * (scale / 160) + 0.5f);
+       /* final float scale = mContext.getResources().getDisplayMetrics().densityDpi;
+        return (int) (value * (scale / 160) + 0.5f);*/
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                value, mContext.getResources().getDisplayMetrics());
     }
 
     /**
