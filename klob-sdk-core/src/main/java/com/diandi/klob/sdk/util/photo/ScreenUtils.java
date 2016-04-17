@@ -1,7 +1,6 @@
 package com.diandi.klob.sdk.util.photo;
 
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,21 +30,14 @@ public class ScreenUtils {
      * @return
      */
     public static int getScreenWidth(Context context) {
-        WindowManager wm = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return context. getResources().getDisplayMetrics().widthPixels;
+        return XApplication.getInstance().getResources().getDisplayMetrics().widthPixels;
     }
 
 
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) XApplication.getInstance()
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return XApplication.getInstance(). getResources().getDisplayMetrics().widthPixels;
+        return XApplication.getInstance().getResources().getDisplayMetrics().widthPixels;
     }
+
     /**
      * 获得屏幕宽度
      *
@@ -53,20 +45,13 @@ public class ScreenUtils {
      * @return
      */
     public static int getScreenHeight(Context context) {
-        WindowManager wm = (WindowManager) context
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return outMetrics.heightPixels;
+        return XApplication.getInstance().getResources().getDisplayMetrics().heightPixels;
     }
 
 
-    public static int getScreenHeight( ) {
-        WindowManager wm = (WindowManager) XApplication.getInstance()
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return outMetrics.heightPixels;
+    public static int getScreenHeight() {
+        return XApplication.getInstance().getResources().getDisplayMetrics().heightPixels;
+
     }
 
 

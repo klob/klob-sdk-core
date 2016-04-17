@@ -3,6 +3,8 @@ package com.diandi.klob.sdk.common;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -12,6 +14,10 @@ import com.diandi.klob.sdk.cache.ACache;
 import com.diandi.klob.sdk.concurrent.SimpleTask;
 import com.diandi.klob.sdk.processor.Processor;
 import com.diandi.klob.sdk.processor.WorkHandler;
+import com.diandi.klob.sdk.util.L;
+
+import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 
 /**
  * *******************************************************************************
@@ -25,12 +31,12 @@ import com.diandi.klob.sdk.processor.WorkHandler;
 
 public class Global {
 
-
+    private final static String TAG = "Global";
+    private static ACache mACache;
 
     public static void copy(Context context, String content) {
         ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         cmb.setText(content);
-
     }
 
     public static void hideSoftInputView(Activity activity) {
@@ -56,14 +62,16 @@ public class Global {
         Processor.execute(handler);
     }
 
-
-
-    private static ACache mACache;
+    public static void execute(Runnable runnable) {
+        Processor.execute(runnable);
+    }
 
     public static ACache getCache() {
         if (mACache == null) {
-            mACache = ACache.get(XApplication.getInstance());
+            mACache = ACache.getInstance();
         }
         return mACache;
     }
+
+
 }

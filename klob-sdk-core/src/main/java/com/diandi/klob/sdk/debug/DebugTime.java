@@ -1,4 +1,6 @@
-package com.diandi.klob.sdk.dev;
+package com.diandi.klob.sdk.debug;
+
+import android.app.ActivityManager;
 
 import com.diandi.klob.sdk.util.L;
 
@@ -47,8 +49,7 @@ public class DebugTime {
     }
 
     public static void print(String tag, int position) {
-        L.d(TAG + tag + " time ", sEnds.get(position) - sStarts.get(position));
-
+        L.e(TAG + tag + " time ", sEnds.get(position) - sStarts.get(position));
     }
 
 }

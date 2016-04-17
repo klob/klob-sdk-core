@@ -38,6 +38,7 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
     protected Thread.UncaughtExceptionHandler mDefaultHandler;
     //用于格式化日期,作为日志文件名的一部分
     protected DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    protected static boolean isOpen = true;
 
     /**
      * 保证只有一个CrashHandler实例
@@ -45,6 +46,13 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
     protected KCrashHandler() {
     }
 
+    public static boolean isOpen() {
+        return isOpen;
+    }
+
+    public static void setIsOpen(boolean isOpen) {
+        KCrashHandler.isOpen = isOpen;
+    }
 
     /**
      * 初始化
@@ -169,6 +177,7 @@ public class KCrashHandler implements Thread.UncaughtExceptionHandler {
 
     public void saveToLocal(String path, String all, String info, String cause, String summary) {
     }
+
     public void saveToServer(String path, String all, String info, String cause, String summary) {
     }
 }

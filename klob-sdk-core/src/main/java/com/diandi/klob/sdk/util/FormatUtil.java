@@ -140,8 +140,8 @@ public class FormatUtil {
         return fileName;
     }
 
-    public static String getFileName(String url) {
-        String fileNameWithExtension = getFileNameWithExtention(url);
+    public static String getFileName(String path) {
+        String fileNameWithExtension = getFileNameWithExtention(path);
         String fileName = fileNameWithExtension;
         if (fileNameWithExtension.contains(".")) {
             fileName = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf("."));
@@ -157,6 +157,18 @@ public class FormatUtil {
             extenstion = url.substring(pointIndex + 1, qIndex);
         } else {
             extenstion = url.substring(pointIndex + 1);
+        }
+        return extenstion;
+    }
+
+    public static String getName(String path) {
+        String extenstion;
+        int pointIndex = path.lastIndexOf(".");
+        int qIndex = path.lastIndexOf("?");
+        if (qIndex > pointIndex) {
+            extenstion = path.substring(pointIndex + 1, qIndex);
+        } else {
+            extenstion = path.substring(pointIndex + 1);
         }
         return extenstion;
     }

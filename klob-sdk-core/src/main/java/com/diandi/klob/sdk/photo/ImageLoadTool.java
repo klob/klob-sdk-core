@@ -3,6 +3,7 @@ package com.diandi.klob.sdk.photo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -53,7 +54,6 @@ import com.facebook.drawee.interfaces.DraweeController;
  */
 public class ImageLoadTool {
     private final static String TAG = "ImageLoadTool";
-    private static ImageLoader imageLoader = ImageLoader.getInstance();
     public static int sDefaultLoadingId;
     //R.color.placeholdercolor   Color.parseColor("#e1e4eb");
     public static int sAvatarLoadingId;
@@ -61,18 +61,25 @@ public class ImageLoadTool {
     public static DisplayImageOptions sDefaultOptions = null;
     public static DisplayImageOptions sNoCacheOptions = null;
     public static DisplayImageOptions sDefaultAvatarOptions = null;
+    private static ImageLoader imageLoader = ImageLoader.getInstance();
+    private ImageLoadingListener animateDisplayListener = new AnimateDisplayListener();
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
+    private ImageLoadTool() {
+    }
 
     public static ImageLoader getImageLoader() {
         return ImageLoader.getInstance();
     }
 
-    public ImageLoadTool() {
-    }
-
     public static ImageLoadTool getInstance() {
+
         if (sInstance == null) {
-            sInstance = new ImageLoadTool();
+            synchronized (ImageLoadTool.class) {
+                if (sInstance == null) {
+                    sInstance = new ImageLoadTool();
+                }
+            }
         }
         return sInstance;
     }
@@ -135,8 +142,7 @@ public class ImageLoadTool {
     }
 
     public static ImageLoadTool initImageLoader(Context context) {
-         // Fresco.initialize(context);
-        File cacheDir = StorageUtils.getCacheDirectory(context);
+        // Fresco.initialize(context);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .threadPoolSize(3)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
@@ -146,7 +152,7 @@ public class ImageLoadTool {
                 .diskCacheSize(50 * 1024 * 1024)
                 .memoryCache(new LruMemoryCache(5 * 1024 * 1024))
                 .memoryCacheSize(5 * 1024 * 1024)
-                .memoryCacheExtraOptions(ScreenUtils.getScreenWidth(context) / 2, ScreenUtils.getScreenHeight(context) / 2)
+                .memoryCacheExtraOptions(ScreenUtils.getScreenWidth() / 2, ScreenUtils.getScreenHeight() / 2)
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .build();
         ImageLoader.getInstance().init(config);
@@ -165,8 +171,6 @@ public class ImageLoadTool {
 
         return width;
     }
-
-
 
     public void loadAvatar(CircleImageView imageView, String url) {
         if (sAvatarLoadingId <= 0) {
@@ -217,11 +221,9 @@ public class ImageLoadTool {
 
     }
 
-
     public void loadImage(ImageView imageView, String url, DisplayImageOptions imageOptions) {
         imageLoader.displayImage(url, imageView, imageOptions);
     }
-
 
     public void loadImageWithAnimate(ImageView imageView, String url) {
     /*    if (imageView instanceof SimpleDraweeView) {
@@ -241,10 +243,28 @@ public class ImageLoadTool {
         imageLoader.displayImage(url, imageAware, sDefaultOptions, animateFirstListener);
     }
 
+    public void loadImage(String uri, ImageSize targetImageSize, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
+        imageLoader.loadImage(uri, targetImageSize, sDefaultOptions, listener, progressListener);
+    }
 
-    private ImageLoadingListener animateDisplayListener = new AnimateDisplayListener();
+    public void loadImage(String uri, ImageSize size, DisplayImageOptions imageOptions, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
+        imageLoader.loadImage(uri, size, imageOptions, listener, progressListener);
+    }
 
-    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    public void loadImage(String uri, ImageSize size, DisplayImageOptions imageOptions, ImageLoadingListener listener) {
+        imageLoader.loadImage(uri, size, imageOptions, listener);
+    }
+
+    /*
+    *
+    * 	public void displayImage(String uri, ImageView imageView, DisplayImageOptions options,
+                ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
+            displayImage(uri, new ImageViewAware(imageView), options, listener, progressListener);
+        }
+    * */
+    public void loadImage(ImageView imageView, String url, SimpleImageLoadingListener progressListener) {
+        imageLoader.displayImage(url, imageView, sDefaultOptions, progressListener);
+    }
 
     private static class AnimateDisplayListener extends SimpleImageLoadingListener {
 
@@ -273,29 +293,6 @@ public class ImageLoadTool {
                 }
             }
         }
-    }
-
-    public void loadImage(String uri, ImageSize targetImageSize, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
-        imageLoader.loadImage(uri, targetImageSize, sDefaultOptions, listener, progressListener);
-    }
-
-    public void loadImage(String uri, ImageSize size, DisplayImageOptions imageOptions, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
-        imageLoader.loadImage(uri, size, imageOptions, listener, progressListener);
-    }
-
-    public void loadImage(String uri, ImageSize size, DisplayImageOptions imageOptions, ImageLoadingListener listener) {
-        imageLoader.loadImage(uri, size, imageOptions, listener);
-    }
-
-    /*
-    *
-    * 	public void displayImage(String uri, ImageView imageView, DisplayImageOptions options,
-                ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
-            displayImage(uri, new ImageViewAware(imageView), options, listener, progressListener);
-        }
-    * */
-    public void loadImage(ImageView imageView, String url, SimpleImageLoadingListener progressListener) {
-        imageLoader.displayImage(url, imageView, sDefaultOptions, progressListener);
     }
     /**
      * Fresco

@@ -65,6 +65,7 @@ public class WaterMarkUtil {
         int srcWidth = src.getWidth();
         int srcHeight = src.getHeight();
         Bitmap watermark = scaleBitmap(res, src.getWidth());
+
       //  L.d(TAG + "watermark", watermark.getWidth(), watermark.getHeight());
      //   L.d(TAG + "src", srcWidth, srcHeight);
         //需要处理图片太大造成的内存超过的问题,这里我的图片很小所以不写相应代码了

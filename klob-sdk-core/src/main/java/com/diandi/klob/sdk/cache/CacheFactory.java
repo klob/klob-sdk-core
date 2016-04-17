@@ -2,6 +2,11 @@ package com.diandi.klob.sdk.cache;
 
 import android.content.Context;
 
+import com.diandi.klob.sdk.concurrent.SimpleExecutor;
+import com.diandi.klob.sdk.concurrent.ThreadPoolFactory;
+
+import java.util.concurrent.Executor;
+
 /**
  * *******************************************************************************
  * *********    Author : klob(kloblic@gmail.com) .
@@ -12,12 +17,20 @@ import android.content.Context;
  * *******************************************************************************
  */
 public class CacheFactory {
-    private static CacheTaskExecutor mCacheTaskExecutor;
+    private static Executor mCacheTaskExecutor;
 
+    @Deprecated
     public static CacheDispatcher create(Context context) {
         if (mCacheTaskExecutor == null) {
-            mCacheTaskExecutor = CacheTaskExecutor.getInstance();
+            mCacheTaskExecutor = ThreadPoolFactory.createSmallExecutor();
         }
-        return new CacheDispatcher(context, mCacheTaskExecutor);
+        return new CacheDispatcher(mCacheTaskExecutor);
+    }
+
+    public static CacheDispatcher create() {
+        if (mCacheTaskExecutor == null) {
+            mCacheTaskExecutor = ThreadPoolFactory.createSmallExecutor();
+        }
+        return new CacheDispatcher(mCacheTaskExecutor);
     }
 }

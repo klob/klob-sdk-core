@@ -24,6 +24,10 @@ public class Processor {
         SimpleExecutor.getInstance().execute(new WorkTask(handler));
     }
 
+    public static void execute(Runnable handler) {
+        SimpleExecutor.getInstance().execute(handler);
+    }
+
     public static void post(Runnable r) {
         SimpleTask.post(r);
     }
@@ -33,7 +37,7 @@ public class Processor {
     }
 
 
-    public static class WorkTask extends SimpleTask {
+    private static class WorkTask extends SimpleTask {
 
         WorkHandler mHandler;
 
@@ -54,6 +58,25 @@ public class Processor {
                     mHandler.over();
                 }
             });
+        }
+    }
+
+    private static class SimpleWorkTask extends SimpleTask {
+
+        Runnable mHandler;
+
+        public SimpleWorkTask(Runnable dataHandler) {
+            mHandler = dataHandler;
+        }
+
+        @Override
+        public void doInBackground() {
+            mHandler.run();
+        }
+
+        @Override
+        public void onFinish(boolean canceled) {
+
         }
     }
 }

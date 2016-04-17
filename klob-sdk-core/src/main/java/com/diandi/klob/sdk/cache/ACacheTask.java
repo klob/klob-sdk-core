@@ -15,11 +15,12 @@ public class ACacheTask implements ICache {
     public String key;
     public Object object;
 
+    @Deprecated
     public ACacheTask(String key, Object object) {
         this.key = key;
         this.object = object;
     }
-
+    @Deprecated
     public ACacheTask(String key, GetCacheListener cacheListener) {
         this.key = key;
         mCacheListener = cacheListener;

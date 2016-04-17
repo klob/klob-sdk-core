@@ -4,14 +4,16 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.diandi.klob.sdk.concurrent.SimpleExecutor;
+import com.diandi.klob.sdk.common.Global;
 import com.diandi.klob.sdk.concurrent.SimpleTask;
+import com.diandi.klob.sdk.processor.Processor;
 import com.diandi.klob.sdk.util.L;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 
 /**
@@ -26,12 +28,12 @@ import java.util.List;
 public class CacheDispatcher {
     private static final String TAG = " CacheDispatcher";
     private static ACache mCache;
-    private CacheTaskExecutor mTaskExecutor;
+    private Executor mTaskExecutor;
 
 
-    CacheDispatcher(Context context, CacheTaskExecutor taskExecutor) {
+    CacheDispatcher(Executor taskExecutor) {
         mTaskExecutor = taskExecutor;
-        mCache = ACache.get(context);
+        mCache = ACache.getInstance();
     }
 
     public void removeCache(String key) {
@@ -50,9 +52,9 @@ public class CacheDispatcher {
         private ICache mCacheTask;
         private ACache mDispatcher;
         private Object mObject;
-        private CacheTaskExecutor mTaskExecutor;
+        private Executor mTaskExecutor;
 
-        public GetCacheTask(ACache dispatcher, ICache cacheTask, CacheTaskExecutor executor) {
+        public GetCacheTask(ACache dispatcher, ICache cacheTask, Executor executor) {
             mDispatcher = dispatcher;
             mCacheTask = cacheTask;
             mTaskExecutor = executor;
@@ -103,7 +105,7 @@ public class CacheDispatcher {
         public PutCacheTask(ACache dispatcher, ICache cacheTask) {
             mDispatcher = dispatcher;
             mCacheTask = cacheTask;
-            SimpleExecutor.getInstance().execute(this);
+            Processor.execute(this);
             //  run();
         }
 

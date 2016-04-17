@@ -42,7 +42,7 @@ public class PhotoOperate {
         this.mContext = context;
     }
 
-    private static void copyFileUsingFileChannels(File source, File dest) throws IOException {
+    public static void copyFileUsingFileChannels(File source, File dest) throws IOException {
         FileChannel inputChannel = null;
         FileChannel outputChannel = null;
         try {
@@ -54,6 +54,10 @@ public class PhotoOperate {
             outputChannel.close();
         }
     }
+
+
+    //File createTempFile(String prefix, String suffix, File directory)
+
 
     private File getTempFile2(Context context) {
         File file = null;
@@ -68,8 +72,8 @@ public class PhotoOperate {
     private File getTempFile(Context context, String path) {
         File file = null;
         try {
-            String fileName = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            file = File.createTempFile(path, ".jpg", context.getCacheDir());
+            String fileName = "IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss1").format(new Date());
+            file = File.createTempFile(fileName, ".jpg", context.getCacheDir());
         } catch (IOException e) {
         }
         return file;
@@ -207,10 +211,7 @@ public class PhotoOperate {
             options.inJustDecodeBounds = false;
 
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-            Matrix matrix = new Matrix();
-            matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
-            Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
+            Bitmap result = BitmapUtil.rotateBitmap(path, bitmap);
 
             outputFile = getTempFile(mContext, name);
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -235,6 +236,7 @@ public class PhotoOperate {
 
     public File operate(Uri fileUri) throws Exception {
         File finalFile;
+
 /*
         if (PhotoOption.isWaterMark) {
             File compressFile = waterMark(fileUri);
@@ -310,18 +312,15 @@ if(PhotoOption.isWaterMark){
         int height = options.outHeight;
         int width = options.outWidth;
 
-        options.outHeight = (int) (height);
-        options.outWidth = (int) (width);
+        options.outHeight = (height);
+        options.outWidth = (width);
         options.inJustDecodeBounds = false;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(outputFile.getAbsolutePath(), options);
-        Matrix matrix = new Matrix();
-        matrix.setRotate(BitmapUtil.readPictureDegree(path), bitmap.getWidth(), bitmap.getHeight());
-        Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+        Bitmap result = BitmapUtil.rotateBitmap(path, bitmap);
         Bitmap waterMarkResult = WaterMarkUtil.watermarkBitmap(result, "");
         outputFile = getTempFile(mContext, name);
         FileOutputStream fos = new FileOutputStream(outputFile);
-        waterMarkResult.compress(Bitmap.CompressFormat.JPEG, PhotoOption.max_photo_quality, fos);
+        waterMarkResult.compress(Bitmap.CompressFormat.JPEG, PhotoOption.max_photo_watermark_quality, fos);
         fos.close();
         if (!waterMarkResult.isRecycled()) {
             waterMarkResult.recycle();

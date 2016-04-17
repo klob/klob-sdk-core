@@ -7,6 +7,8 @@ import com.diandi.klob.sdk.common.Global;
 import com.diandi.klob.sdk.photo.ImageLoadTool;
 import com.diandi.klob.sdk.photo.PhotoOption;
 import com.diandi.klob.sdk.util.L;
+import com.diandi.klob.sdk.util.LogLevel;
+import com.diandi.klob.sdk.util.Logger;
 
 /**
  * *******************************************************************************
@@ -32,8 +34,9 @@ public class XApplication extends Application {
     public static void init(Application application, boolean isDebug) {
         sInstance = application;
         PhotoOption.isWaterMark = false;
-        L.setLoggable(isDebug);
         ImageLoadTool.initImageLoader(application);
+        Logger.init("klob").setMethodCount(3).setLogLevel(LogLevel.FULL).hideThreadInfo();
+        L.setLoggable(isDebug);
     }
 
     public ACache getCache() {

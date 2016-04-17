@@ -52,7 +52,7 @@ public class L {
 
     public static void d(String msg) {
         if (isDebug) {
-            Logger.d(TAG, msg + "   \n" );
+            Logger.d(TAG, msg + "   \n");
         }
     }
 
@@ -94,9 +94,22 @@ public class L {
 
     public static void d(String tag, List msg) {
         if (isDebug) {
-
             Logger.d(tag, msg == null ? " the obj is null" : "  size  " + msg.size() + "     " + Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg.toString());
         }
+    }
+
+    public static Object dGet(Object obj, String fieldName) {
+        Object o = null;
+        if (obj == null) {
+            Logger.d(TAG, "the obj   is null");
+        } else {
+            try {
+                o = obj.getClass().getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        return o;
     }
 
     public static void dReflect(String tag, Object obj) {
@@ -115,6 +128,57 @@ public class L {
                     e.printStackTrace();
                 }
             }
+            Logger.e(tag, info);
+        }
+    }
+
+    public static Field[] dReflectField(String tag, Object obj) {
+        Field[] fields = null;
+        if (obj == null) {
+            Logger.d(TAG, "the obj   is null");
+        } else  {
+            //String info = "";
+            fields = obj.getClass().getDeclaredFields();
+            //  String[] types1 = {"int", "java.lang.String", "boolean", "char", "float", "double", "long", "short", "byte"};
+            // String[] types2 = {"Integer", "java.lang.String", "java.lang.Boolean", "java.lang.Character", "java.lang.Float", "java.lang.Double", "java.lang.Long", "java.lang.Short", "java.lang.Byte"};
+           /* for (Field field : fields) {
+                field.setAccessible(true);
+                try {
+                    info = info + field.getName() + "  " + field.get(obj) + "\n";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            Logger.e(tag, info);*/
+        }
+        return fields;
+    }
+
+    public static void dSet(String tag, String fatherClass, Object obj, String fieldName, Object value) {
+        if (obj == null) {
+            Logger.d(TAG, "the obj   is null");
+        } else if (isDebug) {
+            String info = "";
+            Field field = null;
+            Class aClass; /*= obj.getClass().getSuperclass().getSuperclass();
+            L.e(TAG, aClass.getSuperclass().getName(), fatherClass.getName());
+            while (!aClass.getSuperclass().getName().equals(fatherClass.getName())) {
+                aClass = aClass.getSuperclass();
+            }
+*/
+            // L.e(TAG, aClass);
+            try {
+                aClass = Class.forName("cn.bmob.v3.BmobObject");
+                field = aClass.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(obj, value);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             Logger.d(tag, info);
         }
     }
@@ -128,6 +192,25 @@ public class L {
             Method m1 = clazz.getDeclaredMethod(methodName);
             m1.setAccessible(true);
             Object msg = m1.invoke(obj);
+            L.d(tag, msg);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void dInvoke(String tag, Object obj, String methodName, Object... args) {
+        if (obj == null || TextUtils.isEmpty(methodName)) {
+            return;
+        }
+        try {
+            Class clazz = obj.getClass();
+            Method m1 = clazz.getDeclaredMethod(methodName);
+            m1.setAccessible(true);
+            Object msg = m1.invoke(obj, args);
             L.d(tag, msg);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -161,6 +244,7 @@ public class L {
         }
         return result;
     }
+
     public static Object dInvokeString(Object obj, String methodName) {
         if (obj == null || TextUtils.isEmpty(methodName)) {
             return null;
@@ -168,7 +252,7 @@ public class L {
         Object result = "";
         try {
             Class clazz = obj.getClass();
-            L.d(TAG,clazz);
+            L.d(TAG, clazz);
             Method m1 = clazz.getDeclaredMethod(methodName);
             m1.setAccessible(true);
             Object resultCache = m1.invoke(obj);
@@ -185,6 +269,7 @@ public class L {
         }
         return result;
     }
+
     public static void d(String tag, String msg) {
         if (isDebug)
             Logger.d(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg);
@@ -268,7 +353,7 @@ public class L {
 
     public static void e(String tag, List msg) {
         if (isDebug) {
-            Logger.d(tag, msg == null ? " the obj is null" : "  size  " + msg.size() + "     " + Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg.toString());
+            Logger.e(tag, msg == null ? " the obj is null" : "  size  " + msg.size() + "     " + Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + msg.toString());
         }
     }
 
@@ -305,7 +390,7 @@ public class L {
 
     public static void e(String tag, double num) {
         if (isDebug)
-            Log.e(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + "   " + num + "   ");
+            Log.e(tag, Thread.currentThread().getStackTrace()[3].getMethodName() + "    " + num + "   ");
     }
 
     public static void e(String tag, String msg, Throwable e) {

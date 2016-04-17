@@ -1,6 +1,5 @@
 package com.diandi.klob.sdk.okhttp.callback;
 
-import com.squareup.okhttp.Request;
 
 /**
  * *******************************************************************************
@@ -12,9 +11,6 @@ import com.squareup.okhttp.Request;
  * *******************************************************************************
  */
 public abstract class ResultCallbackString extends ResultCallback<String> {
-    @Override
-    public abstract void onError(Request request, Exception e);
 
-    @Override
     public abstract void onResponse(String response);
 }

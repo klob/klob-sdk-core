@@ -49,11 +49,11 @@ public final class Logger {
     private static final char BOTTOM_LEFT_CORNER = '╚';
     private static final char MIDDLE_CORNER = '╟';
     private static final char HORIZONTAL_DOUBLE_LINE = '║';
-    private static final String DOUBLE_DIVIDER = "════════════════════════════════════════════";
-    private static final String TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER;
-    private static final String BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER;
-    private static final String SINGLE_DIVIDER = "────────────────────────────────────────────";
-    private static final String MIDDLE_BORDER = MIDDLE_CORNER + SINGLE_DIVIDER + SINGLE_DIVIDER;
+    private static final String DOUBLE_DIVIDER = "═════════════════════";
+    private static final String TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER;
+    private static final String BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER;
+    private static final String SINGLE_DIVIDER = "─────────────────────";
+    private static final String MIDDLE_BORDER = MIDDLE_CORNER + SINGLE_DIVIDER;
 
     /**
      * TAG is used for the Log, the name is a little different
@@ -86,7 +86,7 @@ public final class Logger {
         if (tag.trim().length() == 0) {
             throw new IllegalStateException("tag may not be empty");
         }
-        Logger.TAG = tag+"";
+        Logger.TAG = tag + "";
         return settings;
     }
 
@@ -282,6 +282,8 @@ public final class Logger {
             if (methodCount > 0) {
                 logDivider(logType, tag);
             }
+
+
             logContent(logType, tag, message);
             logBottomBorder(logType, tag);
             return;
@@ -351,6 +353,7 @@ public final class Logger {
     }
 
     private static void logChunk(int logType, String tag, String chunk) {
+
         String finalTag = formatTag(tag);
         switch (logType) {
             case Log.ERROR:
@@ -369,7 +372,9 @@ public final class Logger {
                 Log.wtf(finalTag, chunk);
                 break;
             case Log.DEBUG:
-                // Fall through, log debug by default
+                Log.d(finalTag, chunk);
+                break;
+            // Fall through, log debug by default
             default:
                 Log.d(finalTag, chunk);
                 break;

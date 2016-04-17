@@ -1,18 +1,21 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version =KLOB_VERSION_NAME
-int version_code=KLOB_VERSION
-android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
-    resourcePrefix "klob-sdk-core_"
-    defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 22
-        versionCode version_code
-        versionName version
+int version_code = rootProject.ext.klob.versionCode
+group = rootProject.ext.klob.group
 
+version = rootProject.ext.klob.versionName
+
+def sdk =rootProject.ext.android
+android {
+    resourcePrefix "klob-sdk-core_"
+    compileSdkVersion sdk.compileSdkVersion
+    buildToolsVersion sdk.buildToolsVersion
+    defaultConfig {
+        minSdkVersion sdk.minSdkVersion
+        targetSdkVersion sdk.targetSdkVersion
+        versionCode sdk.versionCode
+        versionName sdk.versionName
     }
     buildTypes {
         release {
@@ -27,24 +30,26 @@ android {
     }
     enforceUniquePackageName = false
 
-}
 
+
+}
+def dependence =rootProject.ext.dependencies
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //latest.integration
-    /*    compile 'com.android.support:appcompat-v7:22.0.0'*/
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'de.hdodenhof:circleimageview:1.2.0'
-    compile 'com.alibaba:fastjson:1.2.4'
+    compile dependence.supportv7
+    compile dependence.supportv4
+   // compile dependence.okhttp
+    compile dependence.imageloader
+    compile dependence.circleimageview
+    compile dependence.fastjson
+    compile dependence.okhttp3
+    compile 'com.zhy:okhttputils:2.3.8'
+   // compile project(':klob-sdk-java')
 
-  //  compile project(':injecteventbus')
 }
 def siteUrl = 'https://github.com/klob/klob-sdk-core'      // 项目的主页
 def gitUrl = 'https://github.com/klob/klob-sdk-core.git'
-group = GROUP
+
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters

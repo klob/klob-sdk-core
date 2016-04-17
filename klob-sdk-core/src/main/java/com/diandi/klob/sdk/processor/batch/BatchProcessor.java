@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * *******************************************************************************
  */
 public class BatchProcessor extends QueueHandler {
-    private final static String TAG="BatchProcessor";
+    private final static String TAG = "BatchProcessor";
     private BatchTaskCallback mBatchTaskCallback;
     private List<WorkHandler> mHandlers;
     private List<WorkTask> mTasks;
@@ -32,7 +32,7 @@ public class BatchProcessor extends QueueHandler {
     private BatchOption mTaskOption;
     private ScheduledExecutorService mExecutorService;
 
-    public BatchProcessor(List<WorkHandler> handlers,  BatchOption option,BatchTaskCallback batchTaskCallback) {
+    public BatchProcessor(List<WorkHandler> handlers, BatchOption option, BatchTaskCallback batchTaskCallback) {
         mBatchTaskCallback = batchTaskCallback;
         mHandlers = handlers;
         mTaskOption = option;
@@ -63,6 +63,7 @@ public class BatchProcessor extends QueueHandler {
             mTasks.add(new WorkTask(handler));
         }
         mTaskSize = mTasks.size();
+        isBackground = mTaskOption.isBackGround;
     }
 
     @Override
@@ -79,13 +80,24 @@ public class BatchProcessor extends QueueHandler {
                 sendEmptyMsg(i);
             }
         } else if (mMode == BatchMode.SCHEDULE) {
-            mExecutorService = Executors.newSingleThreadScheduledExecutor();
+            mExecutorService = Executors.newScheduledThreadPool(1000);
             mExecutorService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     if (!mIsCancel) {
                         {
-                            int delay = new Random(System.currentTimeMillis()).nextInt(mTaskOption.delay);
+                            int delay = mTaskOption.delay;
+                            if (delay == 0) {
+
+                            } else {
+                                try {
+                                    delay = new Random(System.currentTimeMillis()).nextInt(mTaskOption.delay);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    delay = 0;
+                                }
+                            }
+
                             sendMsgDelay(mIndex, delay * 1000);
                         }
                     }

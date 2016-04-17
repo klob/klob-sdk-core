@@ -1,0 +1,61 @@
+ext {
+
+    klob = [
+            versionCode: 4,
+            versionName: "1.0.4",
+            group      : "com.diandi.klob"
+    ]
+    //latest.integration
+    sdkVersion = 23
+    sdkLibrary = "23.2.0"
+    android = [compileSdkVersion: sdkVersion,
+               buildToolsVersion: "23.0.2",
+               minSdkVersion    : 16,
+               targetSdkVersion : 23,
+               versionCode      : 1,
+               versionName      : "1.0.0"]
+
+    dependencies = [
+            "recylerview"     : 'com.android.support:recyclerview-v7:' + sdkLibrary,
+            "supportv7"       : 'com.android.support:appcompat-v7:' + sdkLibrary,
+            "supportv4"       : 'com.android.support:support-v4:' + sdkLibrary,
+            "design"          : 'com.android.support:design:' + sdkLibrary,
+
+            //klob sdk
+            "sweetalertdialog": 'com.diandi.klob:sweet-alert-dialog:1.0.0',
+            "klob-sdk-ui"     : "com.diandi.klob:klob-sdk-ui:1.0.2",
+            "klob-sdk-core"   : "com.diandi.klob:klob-sdk-ui:1.0.3",
+
+            "nineoldandroids" : 'com.nineoldandroids:library:latest.integration',
+            "glide"           : 'com.github.bumptech.glide:glide:latest.integration',
+            "imageloader"     : "com.nostra13.universalimageloader:universal-image-loader:latest.integration",
+            "circleimageview" : "de.hdodenhof:circleimageview:latest.integration",
+            "systembartint"   : 'com.readystatesoftware.systembartint:systembartint:latest.integration',
+
+            "fastjson"        : "com.alibaba:fastjson:latest.integration",
+            "okhttp"          : "com.squareup.okhttp:okhttp:latest.integration",
+            "okhttp3"          : "com.squareup.okhttp3:okhttp:3.2.0",
+            "dragger"         : 'com.squareup.dagger:dagger:latest.integration',
+            "jsr250"          : 'javax.annotation:jsr250-api:latest.integration',
+
+            'rx_java'         : 'io.reactivex:rxjava:latest.integration',
+            "rx_android"      : "io.reactivex:rxandroid:latest.integration",
+            "rx_binding"      : "com.jakewharton.rxbinding:rxbinding:latest.integration",
+            "retrofit"        : "com.squareup.retrofit2:retrofit:latest.integration",
+            "retrofit_adapter": "com.squareup.retrofit2:adapter-rxjava:latest.integration",
+            "realm"           : 'io.realm:realm-android:latest.integration'
+
+    ]
+    tools = [
+            //debug tools
+            "leakcanary" : 'com.squareup.leakcanary:leakcanary-android-no-op:latest.integration',
+            "blockcanary": 'com.github.moduth:blockcanary-ui:latest.integration',
+            "analytics"  : 'com.umeng.analytics:analytics:latest.integration'
+    ]
+
+    inject = [
+            "butterknife": 'com.jakewharton:butterknife:latest.integration'
+    ]
+
+
+}

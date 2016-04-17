@@ -1,6 +1,7 @@
 package com.diandi.klob.sdk.processor.batch;
 
 import com.diandi.klob.sdk.concurrent.SimpleTask;
+import com.diandi.klob.sdk.util.L;
 
 /**
  * *******************************************************************************
@@ -12,6 +13,9 @@ import com.diandi.klob.sdk.concurrent.SimpleTask;
  * *******************************************************************************
  */
 public abstract class QueueHandler {
+    private static final String TAG = "QueueHandler";
+    protected boolean isBackground = false;
+
     protected abstract void onReceive(int what, Object obj);
 
     protected abstract void doNext(int index);
@@ -23,12 +27,30 @@ public abstract class QueueHandler {
     }
 
     protected void sendMsgDelay(final int what, int delay) {
-        SimpleTask.postDelay(new Runnable() {
-            @Override
-            public void run() {
+        L.d(TAG, delay);
+        if (delay == 0) {
+            if (isBackground) {
                 onReceive(what, null);
+                return;
             }
-        }, delay);
+            SimpleTask.post(new Runnable() {
+                @Override
+                public void run() {
+                    onReceive(what, null);
+                }
+            });
+        } else {
+            if (isBackground) {
+                onReceive(what, null);
+                return;
+            }
+            SimpleTask.postDelay(new Runnable() {
+                @Override
+                public void run() {
+                    onReceive(what, null);
+                }
+            }, delay);
+        }
 
     }
 

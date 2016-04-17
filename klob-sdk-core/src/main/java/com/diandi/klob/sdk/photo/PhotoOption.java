@@ -11,8 +11,9 @@ package com.diandi.klob.sdk.photo;
  */
 public class PhotoOption {
     public static int max_photo_size=250 * 1024;
-    public static int max_photo_quality=70;
+    public static int max_photo_quality=75;
+    public static int max_photo_watermark_quality=90;
     public static boolean isWaterMark=true;
     public static boolean isCompress=true;
-    public static float scale=0.5f;
+    public static float scale=0.3f;
 }

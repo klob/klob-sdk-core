@@ -12,9 +12,24 @@ import java.util.concurrent.TimeUnit;
  * *******************************************************************************
  */
 public class BatchOption {
+
     public BatchMode mode = BatchMode.SEQUENCE;
+
+    /**
+     * unit the time unit of the initialDelay and period parameters
+     */
     public TimeUnit unit = TimeUnit.MINUTES;
+    /**
+     * period the period between successive executions
+     */
     public int period = 1;
+    /**
+     * initialDelay the time to delay first execution
+     */
     public int initialDelay = 0;
-    public int delay=0;
+    /**
+     * 延迟
+     */
+    public int delay = 0;
+    public boolean isBackGround = false;
 }

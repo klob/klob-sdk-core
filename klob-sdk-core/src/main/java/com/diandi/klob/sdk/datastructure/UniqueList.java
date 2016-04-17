@@ -2,6 +2,7 @@ package com.diandi.klob.sdk.datastructure;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * *******************************************************************************
@@ -55,5 +56,11 @@ public class UniqueList<E> extends ArrayList<E> {
     @Override
     protected void removeRange(int fromIndex, int toIndex) {
         super.removeRange(fromIndex, toIndex);
+    }
+
+    public static void main(String[] args)
+    {
+        List<String> l=new UniqueList<>();
+        l.add("12312");
     }
 }

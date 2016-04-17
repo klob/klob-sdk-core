@@ -93,6 +93,21 @@ public class BitmapUtil {
         return degree;
     }
 
+    public static Bitmap rotateBitmap(String path, Bitmap bitmap) {
+        int degree = BitmapUtil.readPictureDegree(path);
+        if (degree == 0) {
+            return bitmap;
+        } else {
+            Matrix matrix = new Matrix();
+            matrix.setRotate(degree, bitmap.getWidth(), bitmap.getHeight());
+            Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return result;
+
+        }
+
+    }
+
     /**
      * 旋转图片
      *
